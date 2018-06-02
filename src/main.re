@@ -67,8 +67,6 @@ and translate_expression =
   | _ => "Not implemented(Expression)";
 
 let () = {
-  Js.log(source);
-  Js.log("");
   let (ast, _) =
     Parser_flow.program_file(source, Some(Loc.SourceFile("./main.re")));
 

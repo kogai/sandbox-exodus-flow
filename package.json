@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest",
     "start": "npm run build && node ./lib/js/src/main.js",
+    "pp": "node lib/js/src/main.js | npx prettier --stdin --parser typescript",
     "build": "bsb -clean-world -make-world",
     "build-docs": "browserify -e lib/index.js -o docs/retyped.js -s retyped"
   },
@@ -28,6 +29,7 @@
     "css-tree": "^1.0.0-alpha.28",
     "graphql": "^0.13.2",
     "meow": "^3.7.0",
+    "prettier": "^1.13.4",
     "reason": "^3.0.0",
     "typescript": "^2.7.2"
   },
