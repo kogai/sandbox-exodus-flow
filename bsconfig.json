@@ -1,10 +1,12 @@
 {
-  "name": "reasonably-typed",
-  "version": "0.14",
+  "name": "exodus",
+  "version": "0.0.1",
   "sources": ["src"],
-  "bs-dependencies": ["@glennsl/bs-json", "flow-dev-tools"],
+  "bs-dependencies": ["flow-dev-tools", "@glennsl/bs-jest"],
   "package-specs": {
-    "module": "commonjs"
+    "module": "commonjs",
+    "in-source": true
   },
+  "suffix": ".bs.js",
   "refmt": 3
 }
