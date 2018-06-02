@@ -4,7 +4,8 @@
   "description": "Exodus from Flow",
   "main": "lib/index.js",
   "scripts": {
-    "test": "npm run build && jest",
+    "test": "make test",
+    "test:watch": "make -j watch test/watch",
     "start": "npm run build && node ./lib/js/src/main.js",
     "pp": "node lib/js/src/main.js | npx prettier --stdin --parser typescript",
     "build": "bsb -clean-world -make-world"

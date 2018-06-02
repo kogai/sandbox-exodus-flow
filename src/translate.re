@@ -28,21 +28,33 @@ let rec statement =
       Statement.FunctionDeclaration({
         id: Some((_, id)),
         params: (params, _rest),
-        returnType: Some((_, (_, returnType))),
+        returnType,
         body,
+        async: _,
+        generator: _,
+        predicate: _,
+        expression: _,
+        typeParameters,
       }),
     ) => {
+      let typeParameters =
+        switch (typeParameters) {
+        | Some((_, annot)) =>
+          let params =
+            List.map(
+              annot.params, ((_, {name, bound: _, variance: _, default: _})) =>
+              name
+            )
+            |> List.toArray
+            |> Js.Array.joinWith(",");
+          Printf.sprintf("<%s>", params);
+        | None => ""
+        };
       let params = List.map(params, pattern);
-      /* List.map(params, ((_loc, param)) =>
-           switch (param) {
-           | Pattern.Identifier({name: (_, ident)}) => ident
-           | _ => "not implemented"
-           }
-         ); */
       let returnType =
         switch (returnType) {
-        | Type.String => ":string"
-        | _ => "not implemented"
+        | Some((_, (_, ty))) => Printf.sprintf(":%s", types(ty))
+        | None => ""
         };
 
       let body: string =
@@ -50,14 +62,15 @@ let rec statement =
         | Function.BodyBlock((_, block)) =>
           block.body
           |> List.map(_, statement)
-          |> Belt.List.toArray
+          |> List.toArray
           |> Js.Array.joinWith("\n")
         | Function.BodyExpression((_, _)) => "expr"
         };
 
       Printf.sprintf(
-        "function %s(%s)%s{%s}",
+        "function %s%s(%s)%s{%s}",
         id,
+        typeParameters,
         Js.Array.joinWith(" ", Belt.List.toArray(params)),
         returnType,
         body,
@@ -65,19 +78,31 @@ let rec statement =
     }
   | (_, Statement.Return({argument: Some(expr)})) =>
     Printf.sprintf("return %s;", expression(expr))
-  | _ => "Not implemented(Statement)"
+  | _ => raise(Yet.Error(Yet.Statement))
 and types =
   fun
   | Type.String => "string"
   | Type.Number => "number"
-  | _ => raise(Yet.Error(Yet.Statement))
+  | Type.Generic({id, typeParameters: _}) => {
+      let id =
+        switch (id) {
+        | Type.Generic.Identifier.Unqualified((_, id)) => id
+        | Type.Generic.Identifier.Qualified(_) => "qualified"
+        };
+      id;
+    }
+  | _ => raise(Yet.Error(Yet.Type))
 and pattern =
   fun
   | (_, Pattern.Identifier({name: (_, ident), typeAnnotation, optional: _})) =>
-    Printf.sprintf("%s:%s", ident, switch typeAnnotation {
-    | Some((_, (_, ty))) => types(ty)
-    | None => ""
-    })
+    Printf.sprintf(
+      "%s:%s",
+      ident,
+      switch (typeAnnotation) {
+      | Some((_, (_, ty))) => types(ty)
+      | None => ""
+      },
+    )
   | _ => raise(Yet.Error(Yet.Statement))
 and expression =
   fun
@@ -93,4 +118,4 @@ and expression =
     }
   | (_, Expression.New(_)) => "New"
   | (_, Expression.Identifier((_, name))) => name
-  | _ => "Not implemented(Expression)";
+  | _ => raise(Yet.Error(Yet.Expression));

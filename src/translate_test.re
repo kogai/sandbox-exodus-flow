@@ -27,7 +27,7 @@ function f(x:number):string {
   test("can convert function with type parameter", () => {
     let source = "
 // @flow
-function f<T>(x:T):T {
+function id<T>(x:T):T {
   return x;
 }
 ";
@@ -35,6 +35,6 @@ function f<T>(x:T):T {
     |> statement_of_string
     |> Translate.statement
     |> expect
-    |> toBe("function f<T>(x:T):T{return x;}");
+    |> toBe("function id<T>(x:T):T{return x;}");
   });
 });
