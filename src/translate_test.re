@@ -21,10 +21,20 @@ function f(x:number):string {
     |> statement_of_string
     |> Translate.statement
     |> expect
-    |> toBe("function f(x):string{return x.toString();}");
+    |> toBe("function f(x:number):string{return x.toString();}");
   });
 
-  test("can convert arrow function", () =>
-    expect(1 + 2) |> toBe(3)
-  );
+  test("can convert function with type parameter", () => {
+    let source = "
+// @flow
+function f<T>(x:T):T {
+  return x;
+}
+";
+    source
+    |> statement_of_string
+    |> Translate.statement
+    |> expect
+    |> toBe("function f<T>(x:T):T{return x;}");
+  });
 });

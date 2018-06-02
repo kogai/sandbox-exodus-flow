@@ -2,6 +2,25 @@ open Parser_flow;
 open Ast;
 open Belt;
 
+module Yet = {
+  type t =
+    | Statement
+    | Expression
+    | Type
+    | Pattern;
+  exception Error(t);
+  let string_of_t = kind =>
+    Printf.sprintf(
+      "Not implemented yet, %s",
+      switch (kind) {
+      | Statement => "Statement"
+      | Expression => "Expression"
+      | Type => "Type"
+      | Pattern => "Pattern"
+      },
+    );
+};
+
 let rec statement =
   fun
   | (
@@ -13,13 +32,13 @@ let rec statement =
         body,
       }),
     ) => {
-      let params =
-        List.map(params, ((_loc, param)) =>
-          switch (param) {
-          | Pattern.Identifier({name: (_, ident)}) => ident
-          | _ => "not implemented"
-          }
-        );
+      let params = List.map(params, pattern);
+      /* List.map(params, ((_loc, param)) =>
+           switch (param) {
+           | Pattern.Identifier({name: (_, ident)}) => ident
+           | _ => "not implemented"
+           }
+         ); */
       let returnType =
         switch (returnType) {
         | Type.String => ":string"
@@ -47,6 +66,19 @@ let rec statement =
   | (_, Statement.Return({argument: Some(expr)})) =>
     Printf.sprintf("return %s;", expression(expr))
   | _ => "Not implemented(Statement)"
+and types =
+  fun
+  | Type.String => "string"
+  | Type.Number => "number"
+  | _ => raise(Yet.Error(Yet.Statement))
+and pattern =
+  fun
+  | (_, Pattern.Identifier({name: (_, ident), typeAnnotation, optional: _})) =>
+    Printf.sprintf("%s:%s", ident, switch typeAnnotation {
+    | Some((_, (_, ty))) => types(ty)
+    | None => ""
+    })
+  | _ => raise(Yet.Error(Yet.Statement))
 and expression =
   fun
   | (_, Expression.Call({callee, arguments: _})) =>
