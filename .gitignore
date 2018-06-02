@@ -1,2 +1,3 @@
-_build
-*.native
+lib
+src.bk
+.merlin

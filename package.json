@@ -1,0 +1,47 @@
+{
+  "name": "exodus",
+  "version": "0.0.1",
+  "description": "Exodus from Flow",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "npm run build && node ./lib/js/src/main.js",
+    "build": "bsb -clean-world -make-world",
+    "build-docs": "browserify -e lib/index.js -o docs/retyped.js -s retyped"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rrdelaney/ReasonablyTyped"
+  },
+  "keywords": [
+    "Reason",
+    "OCaml",
+    "Bucklescript",
+    "Flow"
+  ],
+  "author": "Ryan Delaney <rrdelaney@outlook.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@glennsl/bs-json": "^1.1.2",
+    "babel-code-frame": "^6.26.0",
+    "chalk": "^2.1.0",
+    "css-tree": "^1.0.0-alpha.28",
+    "graphql": "^0.13.2",
+    "meow": "^3.7.0",
+    "reason": "^3.0.0",
+    "typescript": "^2.7.2"
+  },
+  "devDependencies": {
+    "@glennsl/bs-jest": "^0.4.2",
+    "browserify": "^16.1.1",
+    "bs-platform": "^2.2.2",
+    "flow-dev-tools": "bsansouci/flow#bsb-support",
+    "jest": "^22.4.2"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/fixtures/"
+    ]
+  }
+}
