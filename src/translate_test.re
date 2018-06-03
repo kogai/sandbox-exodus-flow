@@ -38,7 +38,7 @@ function id<T>(x:T):T {
     |> toBe("function id<T>(x:T):T{return x;}");
   });
 
-  Only.test("can convert intersection type", () => {
+  test("can convert intersection type", () => {
     let source = "
 // @flow
 type T = {
@@ -55,6 +55,6 @@ type T = {
         }
     )
     |> expect
-    |> toBe("type T = {a:number, b:string,c:boolean}");
+    |> toBe("type T = {a:number,b:string} & {c:boolean}");
   });
 });

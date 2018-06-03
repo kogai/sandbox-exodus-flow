@@ -10,6 +10,7 @@ module Yet = {
     | Type
     | Property
     | ExpressionKey
+    | PropertyValue
     | Pattern;
   exception Error(t);
   let string_of_t = kind =>
@@ -21,6 +22,7 @@ module Yet = {
       | Type => "Type"
       | Pattern => "Pattern"
       | ExpressionKey => "ExpressionKey"
+      | PropertyValue => "PropertyValue"
       | Property => "Property"
       },
     );
@@ -90,6 +92,7 @@ and types =
   fun
   | Type.String => "string"
   | Type.Number => "number"
+  | Type.Boolean => "boolean"
   | Type.Generic({id, typeParameters: _}) => {
       let id =
         switch (id) {
@@ -112,11 +115,16 @@ and property =
       _,
       {key, value, optional: _, static: _, _method: _, variance: _},
     )) =>
-    sprintf("%s", expression_object_property_key(key))
-  | Type.Object.SpreadProperty(_) => "SpreadProperty"
+    sprintf("%s:%s", expression_object_property_key(key), property_value(value))
+  | Type.Object.SpreadProperty((_, { argument: (_, ty) })) => types(ty)
   | _ => raise(Yet.Error(Yet.Property))
+and property_value =
+  fun
+  | Type.Object.Property.Init((_, ty)) => types(ty)
+  | _ => raise(Yet.Error(Yet.PropertyValue))
 and expression_object_property_key =
   fun
+  | Expression.Object.Property.Identifier(id) => string_of_identifier(id)
   | _ => raise(Yet.Error(Yet.ExpressionKey))
 and pattern =
   fun
