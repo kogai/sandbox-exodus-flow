@@ -15,8 +15,12 @@
     "url": "https://github.com/kogai/exodus"
   },
   "jest": {
-    "roots": ["src"],
-    "testMatch": ["**/*_test.bs.js"]
+    "roots": [
+      "src"
+    ],
+    "testMatch": [
+      "**/*_test.bs.js"
+    ]
   },
   "keywords": [
     "Reason",

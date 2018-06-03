@@ -37,4 +37,24 @@ function id<T>(x:T):T {
     |> expect
     |> toBe("function id<T>(x:T):T{return x;}");
   });
+
+  Only.test("can convert intersection type", () => {
+    let source = "
+// @flow
+type T = {
+  a: number,
+  ...{ b: string },
+} & { c: boolean};
+";
+    source
+    |> statement_of_string
+    |> (
+      x =>
+        try (Translate.statement(x)) {
+        | Translate.Yet.Error(y) => Translate.Yet.string_of_t(y)
+        }
+    )
+    |> expect
+    |> toBe("type T = {a:number, b:string,c:boolean}");
+  });
 });
