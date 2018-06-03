@@ -6,7 +6,13 @@ let statement_of_string = content => {
   let (ast, _) =
     Parser_flow.program_file(content, Some(Loc.SourceFile("dummy.js")));
   let (_, statements, _) = ast;
-  List.hd(statements);
+  List.hd(statements)
+  |> (
+    x =>
+      try (Translate.statement(x)) {
+      | Translate.Yet.Error(y) => Translate.Yet.string_of_t(y)
+      }
+  );
 };
 
 describe("Translate", () => {
@@ -19,7 +25,6 @@ function f(x:number):string {
 ";
     source
     |> statement_of_string
-    |> Translate.statement
     |> expect
     |> toBe("function f(x:number):string{return x.toString();}");
   });
@@ -33,7 +38,6 @@ function id<T>(x:T):T {
 ";
     source
     |> statement_of_string
-    |> Translate.statement
     |> expect
     |> toBe("function id<T>(x:T):T{return x;}");
   });
@@ -48,12 +52,6 @@ type T = {
 ";
     source
     |> statement_of_string
-    |> (
-      x =>
-        try (Translate.statement(x)) {
-        | Translate.Yet.Error(y) => Translate.Yet.string_of_t(y)
-        }
-    )
     |> expect
     |> toBe("type T = {a:number,b:string} & {c:boolean}");
   });
