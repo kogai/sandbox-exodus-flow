@@ -4,7 +4,8 @@
   "description": "Exodus from Flow",
   "bin": "lib/js/src/main.bs.js",
   "scripts": {
-    "test": "make test",
+    "test": "make test && npm run run test:ts",
+    "test:ts": "tsc",
     "test:watch": "make -j watch test/watch",
     "start": "npm run build && node ./lib/js/src/main.bs.js",
     "pp": "node lib/js/src/main.js | npx prettier --stdin --parser typescript",
@@ -31,13 +32,13 @@
   "license": "MIT",
   "dependencies": {
     "prettier": "^1.13.4",
-    "reason": "^3.0.0",
-    "typescript": "^2.7.2"
+    "reason": "^3.0.0"
   },
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.2",
     "bs-platform": "^3.1.5",
     "flow-dev-tools": "bsansouci/flow#bsb-support",
-    "jest": "^22.4.2"
+    "jest": "^22.4.2",
+    "typescript": "^2.9.1"
   }
 }
