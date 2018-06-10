@@ -10,6 +10,7 @@ jobs:
           name: Restore cache
           keys:
             - cache-key--{{ checksum "package-lock.json" }}
+            - cache-key--
       - run:
           name: Install dependencies
           command: |
