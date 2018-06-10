@@ -1,12 +1,20 @@
+open Belt;
+open Printf;
 open Jest;
 open Expect;
 open! Expect.Operators;
+
+module Prettier = {
+  type option = {. "parser": string};
+
+  [@bs.module "prettier"] external format : (string, option) => string = "";
+};
 
 let statement_of_string = content => {
   let (ast, _) =
     Parser_flow.program_file(content, Some(Loc.SourceFile("dummy.js")));
   let (_, statements, _) = ast;
-  List.hd(statements)
+  List.headExn(statements)
   |> (
     x =>
       try (Translate.statement(x)) {
@@ -15,44 +23,32 @@ let statement_of_string = content => {
   );
 };
 
-describe("Translate", () => {
-  test("can convert function literal", () => {
-    let source = "
-// @flow
-function f(x:number):string {
-  return x.toString();
-}
-";
-    source
-    |> statement_of_string
-    |> expect
-    |> toBe("function f(x:number):string{return x.toString();}");
-  });
+let tests_dir = "tests";
 
-  test("can convert function with type parameter", () => {
-    let source = "
-// @flow
-function id<T>(x:T):T {
-  return x;
-}
-";
-    source
-    |> statement_of_string
-    |> expect
-    |> toBe("function id<T>(x:T):T{return x;}");
-  });
-
-  test("can convert intersection type", () => {
-    let source = "
-// @flow
-type T = {
-  a: number,
-  ...{ b: string },
-} & { c: boolean};
-";
-    source
-    |> statement_of_string
-    |> expect
-    |> toBe("type T = {a:number,b:string} & {c:boolean}");
-  });
-});
+describe("Translate", () =>
+  tests_dir
+  |> Node.Fs.readdirSync
+  |> Js.Array.filter(path =>
+       Js.Re.fromString(".*jsx?$") |> Js.Re.test(path)
+     )
+  |> List.fromArray
+  |> List.forEach(_, path =>
+       test(
+         sprintf("can translate (%s)", path),
+         () => {
+           let filename = Filename.chop_extension(path);
+           let source =
+             Node.Fs.readFileAsUtf8Sync(sprintf("%s/%s", tests_dir, path));
+           let expect_result =
+             Node.Fs.readFileAsUtf8Sync(
+               sprintf("%s/%s.ts", tests_dir, filename),
+             );
+           source
+           |> statement_of_string
+           |> Prettier.format(_, {"parser": "typescript"})
+           |> expect
+           |> toBe(expect_result);
+         },
+       )
+     )
+);
