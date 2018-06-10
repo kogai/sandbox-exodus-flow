@@ -5,7 +5,7 @@
   "bs-dependencies": ["flow-dev-tools", "@glennsl/bs-jest"],
   "package-specs": {
     "module": "commonjs",
-    "in-source": true
+    "in-source": false
   },
   "suffix": ".bs.js",
   "refmt": 3
