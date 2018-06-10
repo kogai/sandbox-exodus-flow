@@ -16,7 +16,7 @@
   },
   "jest": {
     "roots": [
-      "src"
+      "lib/js/src"
     ],
     "testMatch": [
       "**/*_test.bs.js"

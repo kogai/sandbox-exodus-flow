@@ -2,24 +2,25 @@ version: 2
 jobs:
   build:
     docker:
-      - image: kogai/exodus
+      - image: kogai/reasonml
     working_directory: ~/app
     steps:
       - checkout
       - restore_cache:
           name: Restore cache
           keys:
-            - cache-key-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "package-lock.json" }}
+            - cache-key--{{ checksum "package-lock.json" }}
       - run:
           name: Install dependencies
           command: |
+            bsb -v
             npm install
       - save_cache:
           name: Save cache
           paths:
             - ~/.npm
             - ~/app/node_modules
-          key: cache-key-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "package-lock.json" }}
+          key: cache-key--{{ checksum "package-lock.json" }}
       - run:
           name: Run tests
           command: npm test
