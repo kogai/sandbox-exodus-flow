@@ -10,10 +10,13 @@ let compile = (~from, ~to_, ~is_debug=false, ()) => {
     Parser_flow.program_file(source_content, Some(source_file));
   let (_, statements, _) = ast;
   let ts =
-    statements
+    try (statements
     |> List.map(_, Translate.statement)
     |> List.toArray
-    |> Js.Array.joinWith("\n");
+    |> Js.Array.joinWith("\n")) {
+      | Translate.Yet.Error(e) => Translate.Yet.string_of_t(e)
+    };
+    
   if (!is_debug) {
     Node.Fs.writeFileSync(to_, ts, `utf8);
   };
@@ -49,4 +52,5 @@ let () =
       }
   )
   |> parse_argv
-  |> Js.log;
+  |> Js.log
+  ;

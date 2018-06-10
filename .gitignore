@@ -3,3 +3,4 @@ src.bk
 .merlin
 *.bs.js
 .bsb.lock
+examples/
