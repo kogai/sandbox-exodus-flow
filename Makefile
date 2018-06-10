@@ -2,7 +2,7 @@ NAME := exodus
 CONTAINER_NAME := reasonml
 REPO := kogai/$(CONTAINER_NAME)
 SRC := $(shell find ./src -type f -name '*.re')
-DIST := $(shell find ./src -type f -name '*.re' | sed 's/re/bs\.js/')
+DIST := lib/js/src/main.bs.js
 
 all: $(DIST)
 
