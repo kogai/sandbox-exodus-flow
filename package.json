@@ -2,7 +2,7 @@
   "name": "exodus",
   "version": "0.0.1",
   "description": "Exodus from Flow",
-  "main": "lib/index.js",
+  "bin": "lib/js/src/main.bs.js",
   "scripts": {
     "test": "make test",
     "test:watch": "make -j watch test/watch",

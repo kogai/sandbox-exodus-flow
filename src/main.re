@@ -1,7 +1,16 @@
 open Belt;
+open Printf;
 
 exception ArgumentParseError(option(string));
 exception Unhandled;
+
+[@bs.module]
+external pkg : {
+  .
+  "version": string,
+  "name": string,
+} =
+  "../../../package.json";
 
 let compile = (~from, ~to_, ~is_debug=false, ()) => {
   let source_file = Loc.SourceFile(from);
@@ -26,14 +35,14 @@ let compile = (~from, ~to_, ~is_debug=false, ()) => {
 let parse_argv: list(string) => string =
   fun
   | ["-v", ..._]
-  | ["--version", ..._] => "exodus 0.0.1"
+  | ["--version", ..._] => sprintf("%s %s", pkg##name, pkg##version)
   | ["-h", ..._]
-  | ["--help", ..._] => "
-exodus 0.0.1
+  | ["--help", ..._] => sprintf("
+%s %s
 Convert Flow to TypeScript
 
 USAGE: exodus [FROM_FILE] [TO_FILE]
-"
+", pkg##name, pkg##version)
   | [from, to_] => compile(~from, ~to_, ())
   | [from, to_, "-d"]
   | [from, to_, "--debug"] => compile(~from, ~to_, ~is_debug=true, ())
