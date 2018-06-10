@@ -12,7 +12,9 @@ RUN apk upgrade --update \
   bash \
   sox
 
-WORKDIR /app
-COPY package-lock.json package.json bsconfig.json /app/
+RUN mkdir ~/.npm-global \
+  && npm config set prefix '~/.npm-global' \
+  && echo "export PATH=~/.npm-global/bin:$PATH" >> ~/.profile \
+  && source ~/.profile
 
-RUN npm install
+RUN npm install -g bs-platform --unsafe-perm

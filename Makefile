@@ -1,5 +1,6 @@
 NAME := exodus
-REPO := kogai/$(NAME)
+CONTAINER_NAME := reasonml
+REPO := kogai/$(CONTAINER_NAME)
 SRC := $(shell find ./src -type f -name '*.re')
 DIST := $(shell find ./src -type f -name '*.re' | sed 's/re/bs\.js/')
 
@@ -22,8 +23,8 @@ test/watch: $(DIST)
 
 .PHONY: docker
 docker:
-	docker build -t $(NAME) .
-	docker tag $(NAME) $(REPO)
+	docker build -t $(CONTAINER_NAME) .
+	docker tag $(CONTAINER_NAME) $(REPO)
 	docker push $(REPO)
 
 .PHONY: clean
